@@ -43,7 +43,7 @@ class PostCell: UITableViewCell {
         let date = Date(timeIntervalSince1970: Double(item.time))
         let time = DateFormatter.localizedString(from: date, dateStyle: .short, timeStyle: .none)
         timeLabel.text = time
-        button.setTitle("expand", for: .normal)
+        updateArrowImage(expandStatus: isExpand)
         button.isHidden = !canExpand(with: textsLabel.text ?? "")
     }
     
