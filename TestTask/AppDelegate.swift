@@ -4,7 +4,7 @@
 //
 //  Created by Denys on 15.07.2022.
 //
-
+import SDWebImageWebPCoder
 import UIKit
 
 @main
@@ -13,6 +13,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        let WebPCoder = SDImageWebPCoder.shared
+        SDImageCodersManager.shared.addCoder(WebPCoder)
         // Override point for customization after application launch.
         return true
     }
