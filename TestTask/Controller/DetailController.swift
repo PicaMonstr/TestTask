@@ -1,24 +1,17 @@
 import Foundation
 import UIKit
 
-class DeteilViewController: UIViewController {
+class DetailViewController: UIViewController {
     
 
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var tableView: UITableView!
     
-    private let model = DeteilControllerModel()
+    private let model = DetailControllerModel()
 
     var id: Int? {
         didSet {
             model.getPost(id: id!)
-        }
-    }
-    
-    func reloadView() {
-        if let postId = model.postId {
-        tableView.reloadData()
-        imageView.sd_setImage(with: postId.post.url)
         }
     }
     
@@ -32,25 +25,31 @@ class DeteilViewController: UIViewController {
         super.viewDidLoad()
         model.delegatePostId = self
     }
+    
+    func reloadView() {
+        if let postId = model.postId {
+        tableView.reloadData()
+        imageView.sd_setImage(with: postId.post.url)
+        }
+    }
 }
 
-extension DeteilViewController: UITableViewDelegate, UITableViewDataSource {
+extension DetailViewController: UITableViewDelegate, UITableViewDataSource {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "PostCell", for: indexPath) as? DeteilPostCell else { return UITableViewCell() }
         if let postId = model.postId {
-        cell.config(post: postId.post)
+            cell.config(post: postId.post)
         }
         return cell
     }
-    
-    
 }
 
-extension DeteilViewController: DeteilViewControllerDelegate {
+extension DetailViewController: DetailViewControllerDelegate {
     
     func reloadData() {
         reloadView()

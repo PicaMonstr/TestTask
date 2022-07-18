@@ -1,14 +1,14 @@
 import Foundation
 
-protocol DeteilViewControllerDelegate: AnyObject {
+protocol DetailViewControllerDelegate: AnyObject {
     
     func reloadData()
     
 }
 
-class DeteilControllerModel {
+class DetailControllerModel {
     
-    weak var delegatePostId: DeteilViewControllerDelegate?
+    weak var delegatePostId: DetailViewControllerDelegate?
     private lazy var request: Request = Request()
     
     private(set) var postId: Id? {
@@ -22,5 +22,4 @@ class DeteilControllerModel {
             self?.postId = postId
         }
     }
-    
 }

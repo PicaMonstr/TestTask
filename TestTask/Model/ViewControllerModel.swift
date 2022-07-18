@@ -3,14 +3,12 @@ import Foundation
 protocol ViewControllerModelDelegate: AnyObject {
     
     func reloadData()
-    
 }
 
 enum sortType {
     
     case time
     case likes
-
 }
 
 class ViewControllerModel {

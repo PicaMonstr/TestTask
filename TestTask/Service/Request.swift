@@ -1,5 +1,6 @@
 import Alamofire
 import Foundation
+
 struct Request: RequestProtocol {
     
     func requestPost(id: Int, complition: @escaping (Id) -> Void) {

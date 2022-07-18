@@ -5,28 +5,37 @@ protocol PostCellDelegate: AnyObject {
 }
 
 class PostCell: UITableViewCell {
-
+    
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var textsLabel: UILabel!
     @IBOutlet weak var likesLabel: UILabel!
     @IBOutlet weak var timeLabel: UILabel!
     @IBOutlet weak var button: UIButton!
+    @IBOutlet weak var heightConstriant: NSLayoutConstraint!
     
-    var isExpand: Bool = false
+    var isExpand: Bool = true
     var onArrowClick: ((UIButton)->())!
-       
-       @IBAction func handleArrowButton(sender: UIButton){
-           onArrowClick(sender)
-           if isExpand == true {
-               textsLabel.numberOfLines = 2
-           } else {
-               textsLabel.numberOfLines = 0
-           }
-       }
-
-       func updateArrowImage(expandStatus: Bool){
-           button.setTitle(expandStatus ? "expand" : "collapse", for: .normal)
-       }
+    
+    var willChangeHeight: (() -> Void)!
+    var didChangeHeight: (() -> Void)!
+    
+    @IBAction func handleArrowButton(sender: UIButton) {
+        willChangeHeight()
+        isExpand.toggle()
+        if isExpand {
+            heightConstriant.constant = 41
+        } else {
+            heightConstriant.constant = textsLabel.text?.height(withConstrainedWidth: textsLabel.frame.size.width, font: textsLabel.font) ?? 120
+        }
+        updateArrowImage(expandStatus: isExpand)
+        didChangeHeight()
+        layoutIfNeeded()
+    }
+    
+    func updateArrowImage(expandStatus: Bool) {
+        button.setTitle(expandStatus ? "expand" : "collapse", for: .normal)
+    }
+    
     func config(item: Post) {
         nameLabel.text = item.title
         textsLabel.text = item.text
@@ -35,18 +44,30 @@ class PostCell: UITableViewCell {
         let time = DateFormatter.localizedString(from: date, dateStyle: .short, timeStyle: .none)
         timeLabel.text = time
         button.setTitle("expand", for: .normal)
+        button.isHidden = !canExpand(with: textsLabel.text ?? "")
     }
     
+    func canExpand(with text: String) -> Bool {
+        text.height(
+            withConstrainedWidth: textsLabel.frame.size.width,
+            font: textsLabel.font
+        ) > textsLabel.font.lineHeight * 2 + 2
+    }
+}
+
+extension String {
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
+    func height(withConstrainedWidth width: CGFloat, font: UIFont) -> CGFloat {
+        let constraintRect = CGSize(width: width, height: .greatestFiniteMagnitude)
+        let boundingBox = self.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font: font], context: nil)
+        
+        return ceil(boundingBox.height)
     }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
+    
+    func width(withConstrainedHeight height: CGFloat, font: UIFont) -> CGFloat {
+        let constraintRect = CGSize(width: .greatestFiniteMagnitude, height: height)
+        let boundingBox = self.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font: font], context: nil)
+        
+        return ceil(boundingBox.width)
     }
-
 }
